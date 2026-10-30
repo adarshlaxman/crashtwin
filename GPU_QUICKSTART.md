@@ -59,6 +59,9 @@ powershell -ExecutionPolicy Bypass -File C:\CARLA_Project\crashtwin\scripts\setu
 bash ~/CARLA_Project/crashtwin/scripts/setup_env.sh                                          # Linux
 ```
 It creates `.venv`, installs the pinned packages, checks the YOLO weights' SHA-256 and runs `check_env`.
+It also creates `C:\CARLA_Project\CLAUDE.md`, a one-line link to `crashtwin\CLAUDE.md`. Open the project
+folder in VS Code and Claude Code then loads the project briefing (rules, current state, work plan)
+automatically. To start, tell Claude: **"read CLAUDE.md and continue"**.
 
 ## 4. Check the GPU and the state
 Windows shown; on Linux use `.venv/bin/python` and `/`.

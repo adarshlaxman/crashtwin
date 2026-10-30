@@ -30,5 +30,12 @@ $sha = (Get-FileHash $w -Algorithm SHA256).Hash.ToLower()
 if ($sha -ne "85a76fe86dd8afe384648546b56a7a78580c7cb7b404fc595f97969322d502d5") { throw "yolo11s.pt SHA-256 mismatch: $sha" }
 Write-Host "YOLO weights OK"
 
+# Claude Code loads CLAUDE.md from the folder it is opened in: link the project folder to the repo's briefing.
+$cl = Join-Path $proj "CLAUDE.md"
+if (-not (Test-Path $cl)) {
+    [IO.File]::WriteAllText($cl, "@crashtwin/CLAUDE.md`n")   # UTF-8 without BOM
+    Write-Host "Created $cl (Claude Code sessions opened at the project folder load crashtwin\CLAUDE.md)"
+}
+
 & $py crashtwin\scripts\check_env.py
 Write-Host "`nNext: set CARLA_ROOT if CARLA is not in the lab-PC location, e.g.  setx CARLA_ROOT C:\CARLA_0.9.15\WindowsNoEditor"

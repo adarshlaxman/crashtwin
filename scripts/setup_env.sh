@@ -26,6 +26,12 @@ if [ ! -f "$W" ]; then
 fi
 echo "85a76fe86dd8afe384648546b56a7a78580c7cb7b404fc595f97969322d502d5  $W" | sha256sum -c -
 
+# Claude Code loads CLAUDE.md from the folder it is opened in: link the project folder to the repo's briefing.
+if [ ! -f "$PROJ/CLAUDE.md" ]; then
+    printf '@crashtwin/CLAUDE.md\n' > "$PROJ/CLAUDE.md"
+    echo "Created $PROJ/CLAUDE.md (Claude Code sessions opened at the project folder load crashtwin/CLAUDE.md)"
+fi
+
 "$PY" crashtwin/scripts/check_env.py
 echo
 echo "Next: export CARLA_ROOT=/path/to/CARLA_0.9.15   (add it to ~/.bashrc)"
