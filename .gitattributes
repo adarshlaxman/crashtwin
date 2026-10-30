@@ -4,3 +4,4 @@
 *.ps1 text eol=crlf
 *.pptx binary
 *.png binary
+results_kit/*.zip filter=lfs diff=lfs merge=lfs -text

@@ -8,7 +8,7 @@ The new machine continues from exactly this state. Nothing is re-generated or re
 | What | Where (inside the project folder) | Size | How it moves |
 |---|---|---|---|
 | Code, configs, docs, paper, slides | `crashtwin/` (git) | < 5 MB | GitHub: `github.com/adarshlaxman/crashtwin` (keep it **private**) |
-| Results, feature caches, checkpoints, predictions, indexes, splits, logs, YOLO weights | `outputs/` (without raw clips), `models/` | 0.4 GB | `crashtwin_results_20261030.zip` (already made), or `transfer.py --tier results` |
+| Results, feature caches, checkpoints, predictions, indexes, splits, logs, YOLO weights | `outputs/` (without raw clips), `models/` | 0.4 GB | **in the GitHub repo** as `results_kit/crashtwin_results_20261030.zip` (Git LFS, arrives with the clone), or `transfer.py --tier results` |
 | Raw CARLA clips (pilot + full run) | `outputs/sim_v2/*/clips/` | 44 GB | `transfer.py --tier sim` (external disk) |
 | Real datasets (CCD, Nexar, Accid3nD) | `datasets/` | 93 GB | `transfer.py --tier datasets`, or download again (section 4) |
 | Python environment | `.venv/` | 5 GB | never copied: `setup_env` rebuilds it |
@@ -48,8 +48,8 @@ Commits are signed `Adarsh L <adarshlaxman@users.noreply.github.com>` (set for t
    permission *Contents: Read and write*).
 
 ### 1b. Copy the data
-- **Results only (enough to continue experiments):** take `C:\CARLA_Project\_transfer\crashtwin_results_20261030.zip`
-  (0.32 GB) on a USB stick or your private drive.
+- **Results only (enough to continue experiments):** nothing to carry: the results kit is in the GitHub repo
+  (`results_kit/`, Git LFS). A copy also stays in `C:\CARLA_Project\_transfer\`.
 - **Everything:** plug in an external disk (needs ~140 GB; say it is `E:`), then from `C:\CARLA_Project`:
   ```
   .venv\Scripts\python.exe crashtwin\scripts\transfer.py plan
@@ -92,8 +92,9 @@ Commits are signed `Adarsh L <adarshlaxman@users.noreply.github.com>` (set for t
    - Linux: `bash ~/CARLA_Project/crashtwin/scripts/setup_env.sh`
    - Exact copy of the lab environment if ever needed: `pip install -r crashtwin/requirements-lock.txt`.
 5. **Data and results** (into the project folder):
-   - Results zip: Windows `tar -xf crashtwin_results_20261030.zip -C C:\CARLA_Project` ·
-     Linux `unzip crashtwin_results_20261030.zip -d ~/CARLA_Project`
+   - Results kit (came with the clone): Windows `tar -xf crashtwin\results_kit\crashtwin_results_20261030.zip -C C:\CARLA_Project` ·
+     Linux `unzip crashtwin/results_kit/crashtwin_results_20261030.zip -d ~/CARLA_Project`
+     (on Linux install Git LFS before cloning: `sudo apt install git-lfs && git lfs install`)
    - External disk: `.venv\Scripts\python.exe crashtwin\scripts\transfer.py copy --tier all --src E:\crashtwin_transfer --dest C:\CARLA_Project`
 6. **Check** (from the project folder; on Linux use `.venv/bin/python` and `/`):
    ```

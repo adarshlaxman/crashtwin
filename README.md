@@ -26,6 +26,7 @@ tests/          unit tests (no CARLA) + fixtures
 The project folder is the folder that contains `crashtwin/` (lab PC: `C:\CARLA_Project`; elsewhere set
 nothing, or `CRASHTWIN_ROOT`). CARLA's folder: `CARLA_ROOT`. Data never goes into git: datasets in
 `<project>/datasets`, everything produced in `<project>/outputs` (simulated runs in `outputs/sim_v2/<mode>_<timestamp>/`).
+One exception: the results kit `results_kit/*.zip` (Git LFS) so a clone can resume; keep this repo private.
 
 ## Commands (from the project folder; Linux: `.venv/bin/python` and `/`)
 ```

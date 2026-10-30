@@ -1,5 +1,7 @@
 # CrashTwin git is CODE ONLY (+ docs, configs, paper, slides). Data, weights and results live outside git:
 # <project>/datasets, <project>/outputs, <project>/models. Move them with scripts/transfer.py.
+# One exception (user decision, 2026-10-30): the results kit results_kit/*.zip, stored with Git LFS so that a
+# clone can resume the project. It holds Nexar-derived features: the repo must stay PRIVATE.
 
 # Python
 __pycache__/
@@ -21,6 +23,7 @@ venv/
 outputs/
 datasets/
 data/
+!results_kit/*.zip
 
 # Model weights (YOLO weights are AGPL-3.0 and downloaded by setup_env; checkpoints are results)
 *.pt
