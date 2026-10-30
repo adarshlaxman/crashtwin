@@ -29,23 +29,23 @@ new project folder automatically (`io_utils.local_path`).
 ## 1. On the lab PC (do once)
 
 ### 1a. Push the code to GitHub
-1. On github.com (logged in as `adarshlaxman`): **New repository** → name `crashtwin` → **Private** →
+Already done on the lab PC: the code is committed on branch `main` (code, configs, docs, paper, slides;
+`.gitignore` keeps data, weights and logs out), and the remote is
+`https://adarshlaxman@github.com/adarshlaxman/crashtwin.git`. The user name in that URL matters: this
+PC's saved GitHub login belongs to someone else (`ishaantandon`), and without it git would push as them.
+Commits are signed `Adarsh L <adarshlaxman@users.noreply.github.com>` (set for this repo only).
+
+1. On github.com, signed in as `adarshlaxman`: **New repository** → name `crashtwin` → **Private** →
    do NOT add a README, .gitignore or licence (the repo must be empty).
-2. In a terminal on the lab PC (all files are already staged; `.gitignore` keeps data, weights and logs out):
+2. In a terminal on the lab PC:
    ```
    cd C:\CARLA_Project\crashtwin
-   git add -A
-   git status                       # ~55 files: code, configs, docs, paper, slides; no data
-   git commit -m "CrashTwin code snapshot 2026-10-30"
-   git remote add origin https://github.com/adarshlaxman/crashtwin.git
-   git push -u origin main          # a browser window asks you to log in to GitHub
+   git push -u origin main
    ```
-3. Commits in this repo are signed `Adarsh L <adarshlaxman@users.noreply.github.com>` (set for this repo
-   only; this PC's global git identity belongs to someone else). To use your own GitHub e-mail instead,
-   run this before `git commit`:
-   ```
-   git config user.email "<your GitHub e-mail or no-reply address>"
-   ```
+3. A "Connect to GitHub" window opens: sign in as **adarshlaxman**. If the browser is already signed in
+   as someone else, choose **Token** instead and paste a fine-grained personal access token
+   (github.com → Settings → Developer settings → Fine-grained tokens → only the `crashtwin` repository,
+   permission *Contents: Read and write*).
 
 ### 1b. Copy the data
 - **Results only (enough to continue experiments):** take `C:\CARLA_Project\_transfer\crashtwin_results_20261030.zip`
