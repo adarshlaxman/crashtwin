@@ -1,0 +1,15 @@
+# Weather conditions v1.0. Each one starts from a CARLA 0.9.15 preset; 'override' sets individual
+# WeatherParameters fields. The FULL resulting parameter set is written to every clip's meta.json.
+version: "1.0"
+conditions:
+  clear_noon:     {preset: ClearNoon,     night: false}
+  cloudy_noon:    {preset: CloudyNoon,    night: false}
+  wet_noon:       {preset: SoftRainNoon,  night: false}
+  hard_rain_noon: {preset: HardRainNoon,  night: false}
+  fog_noon:                               # no fog preset exists in 0.9.15
+    preset: CloudyNoon
+    night: false
+    override: {fog_density: 45.0, fog_distance: 5.0, fog_falloff: 1.5}   # tuned in smoke tests
+  clear_sunset:   {preset: ClearSunset,   night: false}
+  clear_night:    {preset: ClearNight,    night: true}                   # vehicle headlights on
+  rain_night:     {preset: MidRainyNight, night: true}

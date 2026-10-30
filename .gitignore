@@ -1,0 +1,50 @@
+# CrashTwin git is CODE ONLY (+ docs, configs, paper, slides). Data, weights and results live outside git:
+# <project>/datasets, <project>/outputs, <project>/models. Move them with scripts/transfer.py.
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Data and results (never commit; licensed data must stay private)
+*.mp4
+*.avi
+*.npz
+*.npy
+*.parquet
+*.csv.gz
+*.ply
+*.pcd
+*.zip
+outputs/
+datasets/
+data/
+
+# Model weights (YOLO weights are AGPL-3.0 and downloaded by setup_env; checkpoints are results)
+*.pt
+*.pth
+*.onnx
+*.engine
+models/
+
+# Logs, temp, partial writes
+*.log
+*.pid
+*.partial
+*.tmp
+
+# Secrets (Hugging Face / GitHub tokens must never be committed)
+.env
+*.token
+*token*.txt
+.huggingface/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+~$*

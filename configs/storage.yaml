@@ -1,0 +1,11 @@
+# Storage guard v1.0 (decision 2026-10-29): simulated data <= 40 GB; always >= 30 GB free on the project drive.
+version: "1.0"
+sim_root: outputs/sim_v2       # relative to the project folder (was C:/CARLA_Project/outputs/sim_v2 on the lab PC)
+full_run_cap_gb: 40.0          # applies to each full_* run
+pilot_run_cap_gb: 8.0         # applies to each pilot_* / smoke_* run (raised from 4.0 after smoke tests: every written clip is kept)
+min_free_gb: 30.0
+# Reserve before every attempt: worst-case clip size + temporary files
+# (the npz writer builds its compressed archive in the same folder).
+per_attempt_reserve_gb: 0.15
+depth_resolution: full         # full = 640x360 | reduced = 320x180 (step 1 of the reduction ladder)
+lidar_points_per_second: 100000

@@ -1,0 +1,190 @@
+# CrashTwin scenario matrix: version 1.0 (Phase B design, 2026-10-29)
+# Status: DESIGN. Feasibility flags are hypotheses until the pilot measures them.
+# Counts are ACCEPTED clips: measured outcome == intended outcome and validation PASS.
+# Labels come from LABELS.md rule v1, never from the scenario intent.
+
+version: "1.0"
+carla_version: "0.9.15"
+label_rule_version: "v1"
+
+clip:
+  fps: 10                     # simulation-time rate; saved frames == simulation ticks (fixed_delta 0.1 s)
+  duration_s: 10.0            # 100 frames
+  event_time_s: [6.0, 9.0]    # uniform; crash/near-miss event position inside the clip
+  normal_anchor_s: [6.0, 9.0] # normal clips get a random anchor so clip timing carries no signal
+  min_warmup_s: 3.0           # clip start is at least 3 s after the ego car spawns
+  max_attempt_sim_s: 60.0     # give up on an attempt after 60 s of simulated time
+
+# ---------------------------------------------------------------- towns
+towns:
+  train_pool:                 # CARLA train / val / test-familiar come only from these
+    Town01_Opt:  {layout: "small town, 1 lane each way, T-junctions"}
+    Town02_Opt:  {layout: "small town, 1 lane each way"}
+    Town03:      {layout: "urban, multi-lane, roundabout; NOT Town03_Opt (broken TM file in 0.9.15)"}
+    Town04_Opt:  {layout: "highway loop + small town section"}
+    Town10HD_Opt: {layout: "dense urban, multi-lane"}
+  heldout_test:
+    Town05_Opt:  {layout: "urban grid + multi-lane roads; NEVER used for training or validation"}
+  not_available:
+    Town06: "not installed (AdditionalMaps); decision 2026-10-29: skipped"
+    Town07: "not installed (AdditionalMaps); rural roads listed as a limitation"
+  town05_share: 0.15          # 15 % of every family's slots go to Town05
+
+# ---------------------------------------------------------------- environment grid
+weather_conditions:           # full parameters live in weather.yaml; assigned round-robin per family x town
+  - clear_noon
+  - cloudy_noon
+  - wet_noon                  # SoftRainNoon
+  - hard_rain_noon
+  - fog_noon                  # custom fog (no preset exists); UNVERIFIED visual quality
+  - clear_sunset
+  - clear_night               # vehicle headlights on
+  - rain_night                # MidRainyNight; headlights on
+traffic_density:              # assigned round-robin so density cannot predict the outcome
+  low:    {vehicles: 20, walkers: 10}
+  medium: {vehicles: 40, walkers: 30}
+  high:   {vehicles: 70, walkers: 50}
+background_vehicle_mix:       # sampled per spawned background vehicle
+  car: 0.62
+  van: 0.10
+  truck: 0.06
+  bus: 0.02
+  motorcycle: 0.12            # 4 blueprints installed; ride stability UNVERIFIED
+  bicycle: 0.08               # 3 blueprints installed; TM behaviour on roads UNVERIFIED
+
+ego:
+  blueprint_pool: car_types_excluding_emergency   # 23 'car' + bmw.grandtourer, mini.cooper_s
+  exclude: [dodge.charger_police, dodge.charger_police_2020, micro.microlino]
+
+# ---------------------------------------------------------------- families
+# feasible_towns lists towns expected to work; the pilot confirms or removes them.
+# 'other_actor' fractions are sampled per slot (deterministic from the seed).
+families:
+
+  # ===== A. CRASH (target 667) =====
+  C1_rear_end:
+    outcome: crash
+    target: 160               # Town05: 24, train pool: 136
+    other_actor: {car: 0.50, van: 0.15, truck: 0.10, bus: 0.05, motorcycle: 0.20}
+    controller: "lead spawned 20-35 m ahead in the ego lane; lead brakes 0.6-1.0 g at trigger; ego ignores the lead"
+    feasible_towns: [Town01_Opt, Town02_Opt, Town03, Town04_Opt, Town10HD_Opt, Town05_Opt]
+    status: "verified for cars in v1 (3 clips); motorcycle/bus/truck leads unverified"
+
+  C2_cut_in:
+    outcome: crash
+    target: 160               # Town05: 24, train pool: 136
+    other_actor: {car: 0.55, van: 0.15, truck: 0.10, motorcycle: 0.20}
+    controller: "cutter in the adjacent same-direction lane 6-12 m ahead; forced lane change at trigger; ego ignores it"
+    feasible_towns: [Town03, Town04_Opt, Town10HD_Opt, Town05_Opt]
+    infeasible: {Town01_Opt: "no same-direction adjacent lane", Town02_Opt: "no same-direction adjacent lane"}
+    status: "verified for cars in v1 (4 clips)"
+
+  C3_junction:
+    outcome: crash
+    target: 140               # Town05: 21, train pool: 119
+    other_actor: "crossing traffic (type measured after the event)"
+    controller: "ego ignores lights/signs/vehicles at +40 % speed; v2 adds a scripted crossing vehicle timed to the junction for determinism"
+    feasible_towns: [Town01_Opt, Town02_Opt, Town03, Town10HD_Opt, Town05_Opt]
+    unverified: {Town04_Opt: "junctions only in the town section"}
+    status: "verified with random traffic in v1 (2 clips); scripted crossing actor not built yet"
+
+  C4_vru_crossing:
+    outcome: crash
+    target: 140               # Town05: 21, train pool: 119
+    other_actor: {pedestrian: 0.65, bicycle: 0.35}
+    controller: "VRU at the kerb 35-50 m ahead; starts crossing when the car's and VRU's arrival times match (+-0.3 s jitter); ego ignores walkers"
+    feasible_towns: [Town01_Opt, Town02_Opt, Town03, Town10HD_Opt, Town05_Opt]
+    infeasible: {Town04_Opt: "highway; no pedestrian crossings"}
+    status: "UNVERIFIED: pedestrian timing fix not retested; bicycle crossing not built"
+
+  C5_single_vehicle:
+    outcome: crash
+    target: 67                # Town05: 10, train pool: 57
+    other_actor: static
+    controller: "ego leaves its lane at a bend or kerb (scripted steering offset) into a pole, wall or barrier"
+    feasible_towns: "UNVERIFIED in every town; pilot decides"
+    status: "UNVERIFIED: not built; may be dropped if the pilot success rate < 50 %"
+
+  # ===== B. NEAR-MISS (target 667) =====
+  N1_rear_end_avoided:
+    outcome: near_miss
+    target: 167               # Town05: 25, train pool: 142
+    other_actor: {car: 0.50, van: 0.15, truck: 0.10, bus: 0.05, motorcycle: 0.20}
+    controller: "as C1, but ego starts scripted emergency braking after a reaction delay of 0.3-0.8 s"
+    feasible_towns: [Town01_Opt, Town02_Opt, Town03, Town04_Opt, Town10HD_Opt, Town05_Opt]
+    status: "UNVERIFIED: not built"
+
+  N2_cut_in_avoided:
+    outcome: near_miss
+    target: 167
+    other_actor: {car: 0.55, van: 0.15, truck: 0.10, motorcycle: 0.20}
+    controller: "as C2, ego brakes after a 0.3-0.8 s reaction delay"
+    feasible_towns: [Town03, Town04_Opt, Town10HD_Opt, Town05_Opt]
+    status: "UNVERIFIED: not built"
+
+  N3_junction_conflict:
+    outcome: near_miss
+    target: 167
+    other_actor: "scripted crossing vehicle"
+    controller: "ego enters on red; the crossing vehicle or the ego brakes so the paths miss"
+    feasible_towns: [Town01_Opt, Town02_Opt, Town03, Town10HD_Opt, Town05_Opt]
+    status: "UNVERIFIED: not built"
+
+  N4_vru_conflict:
+    outcome: near_miss
+    target: 166
+    other_actor: {pedestrian: 0.65, bicycle: 0.35}
+    controller: "VRU starts crossing; the ego brakes, or the VRU stops at the lane edge"
+    feasible_towns: [Town01_Opt, Town02_Opt, Town03, Town10HD_Opt, Town05_Opt]
+    status: "UNVERIFIED: not built"
+
+  # ===== C. NORMAL (target 666) =====
+  R1_car_following:
+    outcome: normal
+    target: 167
+    controller: "Traffic Manager autopilot, safe gaps (distance_to_leading 3-6 m)"
+    feasible_towns: [Town01_Opt, Town02_Opt, Town03, Town04_Opt, Town10HD_Opt, Town05_Opt]
+    status: "a v1 equivalent exists (4 clips)"
+
+  R2_junction_approach:
+    outcome: normal
+    target: 167
+    controller: "autopilot obeying lights through a junction; the anchor is placed at junction entry"
+    feasible_towns: [Town01_Opt, Town02_Opt, Town03, Town10HD_Opt, Town05_Opt]
+    status: "UNVERIFIED"
+
+  R3_lane_change:
+    outcome: normal
+    target: 166
+    controller: "forced lane change into a gap of at least 20 m; the anchor is placed at the lane change"
+    feasible_towns: [Town03, Town04_Opt, Town10HD_Opt, Town05_Opt]
+    status: "UNVERIFIED"
+
+  R4_vru_nearby:
+    outcome: normal
+    target: 166
+    controller: "pedestrians or cyclists on the pavement or crossing legally while the ego yields; the anchor is the closest approach"
+    feasible_towns: [Town01_Opt, Town02_Opt, Town03, Town10HD_Opt, Town05_Opt]
+    status: "UNVERIFIED"
+
+totals:
+  crash: 667
+  near_miss: 667
+  normal: 666
+  all: 2000
+  town05_heldout: 300         # 100 per outcome
+  train_pool: 1700            # later split by slot into train 70 % / val 15 % / test_familiar 15 %
+
+# ---------------------------------------------------------------- attempts and retries
+attempt_policy:
+  max_attempts_per_slot: 5
+  seed: "sha256(matrix_version, slot_id, attempt) mod 2^31"
+  accept: "first attempt whose measured outcome == intended outcome AND validation == PASS"
+  spillover: "valid clip with a different measured outcome: kept, labelled truthfully, not counted toward the quota"
+  log: "every attempt (accepted / spillover / no_event / invalid / error) goes in run_log.jsonl with its reason"
+
+pilot:
+  slots_per_family: 10        # 13 families x 10 = 130 slots; pilot clips are NEVER part of the final dataset
+  towns: "spread over each family's feasible towns, including Town05"
+  weather: "spread over all 8 conditions"
+  acceptance: "see VALIDATION_PLAN.md section 7"

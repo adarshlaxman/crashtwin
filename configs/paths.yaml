@@ -1,0 +1,28 @@
+# CrashTwin data and output locations.
+# Relative paths are relative to the project folder = the folder that contains crashtwin/
+# (override with the CRASHTWIN_ROOT environment variable). On the original lab PC that is C:/CARLA_Project.
+# carla_root is overridden by the CARLA_ROOT environment variable (set it on a new machine).
+project_root: .
+carla_root: C:/Users/PESU-RF/Downloads/CARLA_0.9.15/WindowsNoEditor
+
+real:
+  ccd_crash_videos: datasets/real_ccd/videos/Crash-1500
+  ccd_normal_videos: datasets/real_ccd/videos/Normal
+  ccd_labels: datasets/real_ccd/Crash-1500.txt
+  accid3nd_zips: datasets/real_accid3nd/zips
+  accid3nd: datasets/real_accid3nd/extracted
+  nexar: datasets/real_nexar
+
+sim:
+  crashes: outputs/crashtwin_sim
+
+outputs:
+  checkpoints: outputs/checkpoints
+  results: outputs/results
+  logs: outputs/logs
+
+carla:
+  host: 127.0.0.1
+  port: 2000
+  tm_port: 8000
+  fixed_delta_seconds: 0.05

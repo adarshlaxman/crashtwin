@@ -1,0 +1,46 @@
+# Sensor rig v1.0: mounts are relative to the ego bounding box (see DATASET_SCHEMA.md section 3).
+# roof = bb.location.z + bb.extent.z ; front = bb.location.x + bb.extent.x
+version: "1.0"
+fixed_delta_seconds: 0.1
+substep_delta: 0.01
+max_substeps: 10
+sensor_timeout_s: 10.0
+
+rgb:
+  blueprint: sensor.camera.rgb
+  mount: {x_from_bb_center: 0.3, z_above_roof: 0.15}
+  width: 1280
+  height: 720
+  fov: 90
+instance:                     # not stored; used only to compute 2D boxes and visibility
+  blueprint: sensor.camera.instance_segmentation
+  same_as: rgb
+depth:
+  blueprint: sensor.camera.depth
+  same_mount_as: rgb
+  width: 640
+  height: 360
+  fov: 90
+lidar:
+  blueprint: sensor.lidar.ray_cast
+  mount: {x: 0.0, z_above_roof: 0.3}
+  channels: 32
+  range: 70
+  points_per_second: 100000
+  rotation_frequency: 10
+  upper_fov: 10
+  lower_fov: -30
+  dropoff_general_rate: 0.0
+radar:
+  blueprint: sensor.other.radar
+  mount: {x_beyond_front: 0.1, z: 0.7}
+  horizontal_fov: 30
+  vertical_fov: 10
+  range: 100
+  points_per_second: 1500
+imu:
+  blueprint: sensor.other.imu
+gnss:
+  blueprint: sensor.other.gnss
+collision:
+  blueprint: sensor.other.collision

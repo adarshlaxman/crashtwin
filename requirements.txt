@@ -1,0 +1,28 @@
+# CrashTwin direct dependencies. Python 3.10 (3.10.11 on the lab PC), venv in <project>/.venv.
+# Install:  python -m pip install -r crashtwin/requirements.txt
+# Exact snapshot of every package on the lab PC: requirements-lock.txt
+# torch/torchvision come from the CUDA 12.6 wheel index (needs an NVIDIA driver that supports CUDA 12.6):
+--extra-index-url https://download.pytorch.org/whl/cu126
+
+# Generator v2 (CARLA client: must match the 0.9.15 server; if pip finds no wheel for your Python,
+# install the wheel shipped in CARLA_0.9.15/PythonAPI/carla/dist/)
+carla==0.9.15
+numpy==2.2.6
+pandas==2.3.3
+pyarrow==25.0.1          # decision D3: Parquet tables; csv.gz fallback if missing
+opencv-python==5.0.0.93
+PyYAML==6.0.3
+
+# Perception, models, evaluation
+torch==2.14.1+cu126
+torchvision==0.29.1+cu126
+ultralytics==8.4.192     # YOLO weights are NOT in git: <project>/models/yolo/yolo11s.pt (setup_env downloads + checks SHA-256)
+lap==0.5.13              # ByteTrack assignment
+scikit-learn==1.7.2
+scipy==1.15.3            # E5 statistics
+matplotlib==3.10.9       # figures
+open3d==0.20.0
+
+# Tools
+psutil==7.2.2            # pipeline.py process checks
+huggingface_hub==2.3.0   # Nexar download (gated dataset: accept the terms, then log in)

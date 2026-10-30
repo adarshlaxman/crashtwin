@@ -1,0 +1,6 @@
+# Normalise text files; shell scripts must keep LF line endings (bash fails on CRLF).
+* text=auto
+*.sh text eol=lf
+*.ps1 text eol=crlf
+*.pptx binary
+*.png binary
