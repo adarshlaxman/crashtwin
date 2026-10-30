@@ -7,7 +7,8 @@ Design documents are in `docs/`. Start with `ARCHITECTURE.md`; the pilot results
 
 **Status (2026-10-30):** generation, tracking, all 26 training runs, E5 and E6 are finished. Results:
 `paper/draft.md` (section 7) and the slides `docs/CrashTwin_progress_20261030.pptx`; problems and fixes:
-`docs/INCIDENTS.md`. **New machine:** `docs/SETUP_NEW_MACHINE.md` (install, copy data, resume).
+`docs/INCIDENTS.md`. **New GPU machine:** start with `GPU_QUICKSTART.md` (clone, combine code + results
+kit, resume in ~30–40 min); full details in `docs/SETUP_NEW_MACHINE.md`.
 
 ## Layout
 ```
